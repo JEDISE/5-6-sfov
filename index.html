@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Викторина</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #2a2a2a;
+            color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .quiz-container {
+            background-color: #3e1e1e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            width: 450px;
+        }
+        .question {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .answers {
+            list-style-type: none;
+            padding: 0;
+        }
+        .answers li {
+            margin-bottom: 15px;
+        }
+        .answer-button {
+            background-color: #b72a2a;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .answer-button:hover {
+            background-color: #9e2121;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        .final-result {
+            margin-top: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            text-align: center;
+        }
+        #next-button {
+            background-color: #3e1e1e;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+            display: none;
+        }
+        #next-button:hover {
+            background-color: #b72a2a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div id="quiz" class="quiz">
+            <div class="question" id="question">Заголовок вопроса</div>
+            <ul class="answers" id="answers">
+                <!-- Варианты ответов будут подставляться здесь -->
+            </ul>
+            <button class="answer-button" id="next-button" onclick="nextQuestion()">Далее</button>
+            <div class="result" id="result"></div>
+        </div>
+        <div id="final-result" class="final-result" style="display: none;">
+            <p>Викторина завершена!</p>
+            <p id="score"></p>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "КАК НАЗЫВАЛИ ШИПУ РАНЬШЕ?",
+                answers: ["Шипуэрчик", "Шип", "Шипок"],
+                correct: "Шипуэрчик"
+            },
+            {
+                question: "кто помойка чата",
+                answers: ["Дима", "джедис", "кунимен"],
+                correct: "Дима"
+            },
+            {
+                question: "СКОЛЬКО ТРЕКОВ У 5-6 СФОВ?",
+                answers: ["1", "2", "3"],
+                correct: "2"
+            },
+            {
+                question: "какой мейн у after",
+                answers: ["шторм", "Хускар", "нету"],
+                correct: "шторм"
+            },
+            {
+                question: "Фанат какого стримера является Dante?",
+                answers: ["папич", "головач", "не смотрит стримы"],
+                correct: "головач"
+            },
+            {
+                question: "Сколько было максимально участников в группе?",
+                answers: ["до 400", "свыше 400", "600 и более"],
+                correct: "свыше 400"
+            },
+            {
+                question: "Что сломали на тусе у Чумной уретры?",
+                answers: ["психику", "унитаз", "кровать"],
+                correct: "унитаз"
+            },
+            {
+                question: "Кто является геем в чате 5-6 сфов?",
+                answers: ["Natsumi", "Леня", "я"],
+                correct: "Natsumi"
+            },
+            {
+                question: "Как зовут Blade of fear?",
+                answers: ["сын хуйни", "Максим", "олег"],
+                correct: "олег"
+            },
+            {
+                question: "Как зовут After?",
+                answers: ["Костя", "Олег", "Саша"],
+                correct: "Костя"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function loadQuestion() {
+            const questionData = questions[currentQuestionIndex];
+            document.getElementById('question').textContent = questionData.question;
+
+            const answersList = document.getElementById('answers');
+            answersList.innerHTML = ''; // Очистить старые ответы
+            questionData.answers.forEach(answer => {
+                const li = document.createElement('li');
+                const button = document.createElement('button');
+                button.textContent = answer;
+                button.classList.add('answer-button');
+                button.onclick = () => checkAnswer(answer);
+                li.appendChild(button);
+                answersList.appendChild(li);
+            });
+
+            document.getElementById('result').textContent = '';
+            document.getElementById('next-button').style.display = 'none'; // Скрыть кнопку "Далее"
+        }
+
+        function checkAnswer(selectedAnswer) {
+            const correctAnswer = questions[currentQuestionIndex].correct;
+            const resultDiv = document.getElementById('result');
+
+            if (selectedAnswer === correctAnswer) {
+                score++;
+                resultDiv.textContent = 'Правильный ответ!';
+                resultDiv.style.color = 'green';
+            } else {
+                resultDiv.textContent = 'Неправильный ответ!';
+                resultDiv.style.color = 'red';
+            }
+
+            document.getElementById('next-button').style.display = 'block'; // Показать кнопку "Далее"
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalResult();
+            }
+        }
+
+        function showFinalResult() {
+            document.getElementById('quiz').style.display = 'none';
+            document.getElementById('final-result').style.display = 'block';
+            document.getElementById('score').textContent = `Вы набрали ${score} из ${questions.length} правильных ответов.`;
+        }
+
+        // Инициализация викторины
+        loadQuestion();
+    </script>
+
+</body>
+</html>
